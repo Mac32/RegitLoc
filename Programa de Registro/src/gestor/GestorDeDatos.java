@@ -1,4 +1,4 @@
-package registro;
+package gestor;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -13,20 +13,17 @@ public class GestorDeDatos {
 		
 		try {
 			Class.forName("org.sqlite.JDBC");
-			ct = DriverManager.getConnection("jdbc:sqlite:/home/canaima/workspace/Programa de Registro/bin/registro/base.db");
+			ct = DriverManager.getConnection("jdbc:sqlite:/home/canaima/git/RegitLoc/Programa de Registro/src/base.sqlite");
 			st = ct.createStatement();
-			System.out.println("Conexión exitosa");
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 				
 	}//Fin del constructor
 	
-	
+		
 	public Statement getSt(){
 		return st;
-
 	}
 	
 
