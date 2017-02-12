@@ -13,7 +13,7 @@ public class GestorDeDatos {
 		
 		try {
 			Class.forName("org.sqlite.JDBC");
-			ct = DriverManager.getConnection("jdbc:sqlite:/home/canaima/git/RegitLoc/Programa de Registro/src/base.sqlite");
+			ct = DriverManager.getConnection("jdbc:sqlite:/home/canaima/git/RegitLoc/Programa de Registro/src/base2.sqlite");
 			st = ct.createStatement();
 		} catch (Exception e) {
 			e.printStackTrace();

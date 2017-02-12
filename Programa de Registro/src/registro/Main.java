@@ -21,12 +21,6 @@ public class Main {
 	}
 		
 //		try {
-//		
-//		UIManager.setLookAndFeel(new com.jtattoo.plaf.noire.NoireLookAndFeel());
-//	} catch (UnsupportedLookAndFeelException e) {
-//		e.printStackTrace();
-//	}
-//		try {
 //			UIManager.setLookAndFeel(new de.javasoft.plaf.synthetica.SyntheticaBlackEyeLookAndFeel());
 //		} catch (UnsupportedLookAndFeelException e) {
 //			e.printStackTrace();
