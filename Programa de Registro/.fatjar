@@ -1,0 +1,14 @@
+#Fat Jar Configuration File
+#Sun Feb 12 22:35:37 VET 2017
+onejar.license.required=true
+manifest.classpath=
+manifest.removesigners=true
+onejar.checkbox=false
+jarname=Programa de Registro_fat.jar
+manifest.mergeall=true
+manifest.mainclass=registro.Main
+manifest.file=<createnew>
+jarname.isextern=false
+onejar.expand=
+excludes=<jar|JTattoo-1.6.11.jar>;<jar|UpperEssentialLookAndFeel[Inale].jar>;<jar|synthetica.jar>;<jar|syntheticaBlackEye.jar>
+includes=
