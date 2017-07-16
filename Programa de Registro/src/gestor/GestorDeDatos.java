@@ -11,10 +11,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Calendar;
 
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.text.JTextComponent;
 
+import ventana.Vcuenta;
 import ventana.Vedición;
 import ventana.Ventana;
 import ventana.Vlogin;
@@ -37,7 +39,7 @@ public class GestorDeDatos {
 		return tiempo.get(Calendar.YEAR);
 	}
 
-	private Boolean validar(Vlogin vlogin){
+	private Boolean validar(Vlogin vlogin){   
 
 		try {
 			ResultSet val = getSt().executeQuery("SELECT * FROM LOGIN WHERE " +
@@ -81,28 +83,27 @@ public class GestorDeDatos {
 		return true;
 	}
 
-	private JTextField[] getAll_Array_tfl(Vedición vedicion, Ventana ventana, Vlogin vlogin){
+	private Boolean comprobar_clones_de_filas(Vedición vedicion, ResultSet aux) throws SQLException{
+		for (Object n: vedicion.ids){
+			if (n.equals(aux.getObject(1))){
+				return false;
+			}
+		}
+		return true;
+	}
 
-		JTextField[] tfl_array = new JTextField[8];
-		tfl_array[0] = ventana.tfl_tema;
-		tfl_array[1] = vedicion.tfl_titulo;
-		tfl_array[2] = vedicion.tfl_autor;
-		tfl_array[3] = vedicion.tfl_Tutor;
-		tfl_array[4] = vedicion.tfl_Año;
-		tfl_array[5] = vedicion.tfl_numero;
-		tfl_array[6] = vlogin.tfl_usuario;
-		tfl_array[7] = vlogin.pwd_contraseña;
+	private JTextField[] getAll_Array_tfl(Vedición vedicion, Ventana ventana, Vlogin vlogin, Vcuenta vcuenta){
+
+		JTextField[] tfl_array = new JTextField[] {ventana.tfl_tema, vedicion.tfl_titulo, vedicion.tfl_autor, vedicion.tfl_tutor,
+				vedicion.tfl_año, vedicion.tfl_nro, vlogin.tfl_usuario, vlogin.pwd_contraseña,
+				vcuenta.tfl_usuario, vcuenta.psw_nueva_contraseña,
+				vcuenta.psw_repita_contraseña};
 		return tfl_array;
 	}
 
 	private JTextField[] getArray_tfl(Vedición vedicion){
 
-		JTextField[] tfl_array = new JTextField[5];
-		tfl_array[0] = vedicion.tfl_titulo;
-		tfl_array[1] = vedicion.tfl_autor;
-		tfl_array[2] = vedicion.tfl_Tutor;
-		tfl_array[3] = vedicion.tfl_Año;
-		tfl_array[4] = vedicion.tfl_numero;
+		JTextField[] tfl_array = new JTextField[] {vedicion.tfl_titulo, vedicion.tfl_autor, vedicion.tfl_tutor, vedicion.tfl_año, vedicion.tfl_nro};
 		return tfl_array;
 	}
 
@@ -116,14 +117,7 @@ public class GestorDeDatos {
 
 	private void modificar(Vedición vedicion){
 
-		String título_tabla[]= new String[7];
-		título_tabla[0]= "Titulo";
-		título_tabla[1]= "Autor";
-		título_tabla[2]= "Tutor";
-		título_tabla[3]= "Carrera";
-		título_tabla[4]= "Linea";
-		título_tabla[5]= "Año";
-		título_tabla[6]= "Número";
+		String título_tabla[]= new String[] {"Titulo", "Autor", "Tutor", "Carrera", "Linea", "Año", "Número"};
 
 		JTextField array_tfl[] = getArray_tfl(vedicion);
 
@@ -194,14 +188,24 @@ public class GestorDeDatos {
 	private String limpiar_pronombres(String strm_temas){
 
 		String[] pronombres = {" implementacion "," basado "," bajo "," como "," cuales "," cuyo ","donde"," de ","estado",
-							   " esta "," el "," en "," cual "," cuya ",
-							   " las "," les "," los "," la "," le "," lo "," que "," se "," si "," tal ",
-							   " una "," un "," unas "," uno "," unos "," y "," para "};
+				" esta "," el "," en "," cual "," cuya ",
+				" las "," les "," los "," la "," le "," lo "," que "," se "," si "," tal ",
+				" una "," un "," unas "," uno "," unos "," y "," para "};
 		for (String palabra: pronombres ){
-					strm_temas = strm_temas.replace(palabra, " ");
-			}
-		
+			strm_temas = strm_temas.replace(palabra, " ");
+		}
+
 		return strm_temas;
+	}
+
+	private Boolean comprobarNumero(String contenido) {
+		try{
+			Integer.parseInt(contenido);
+			return true;
+		}catch(Exception e) {
+			e.getStackTrace();
+			return false;
+		}
 	}
 
 	public Statement getSt(){
@@ -309,6 +313,7 @@ public class GestorDeDatos {
 			}
 		}
 	}
+
 	@SuppressWarnings({ "unchecked" })
 	public void agregarLineas_principal(String carrS){
 
@@ -452,7 +457,7 @@ public class GestorDeDatos {
 
 	public void buscar(Ventana ventana){
 
-		
+
 		String[] strn_temas = limpiar_pronombres(ventana.tfl_tema.getText()).split(" ");
 		ventana.strn_carreraS = ((String)ventana.carreras.getSelectedItem());
 		ventana.strn_lineaS = ((String)Ventana.linea.getSelectedItem());
@@ -481,22 +486,99 @@ public class GestorDeDatos {
 					}
 				}
 			}else{
+				if (comprobarNumero(strn_temas[0])) { 
+
+					ResultSet aux = getSt().executeQuery("SELECT * FROM TESIS WHERE Número="+strn_temas[0]);
+					while(aux.next()){
+						Object[] fila2 = {aux.getObject(4), aux.getObject(5), aux.getObject(6)};
+						if((Integer)aux.getObject(7)>=obtener_año() - ventana.sld_años.getValue() && comprobar_clones_de_filas(ventana, aux)){
+							ventana.ids.add((Integer)aux.getObject(1));
+							ventana.dtm.addRow(fila2);
+						}
+					}
+				}else {
+					for (String p: strn_temas){
+						ResultSet aux = getSt().executeQuery("SELECT * FROM TESIS WHERE " +
+								"REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(Titulo," +
+								"'á','a'), 'é','e'),'í','i'),'ó','o'),'ú','u')," +
+								"'Á','A'), 'É','E'),'Í','I'),'Ó','O'),'Ú','U') LIKE '%"+eliminar_acentos(p)+"%' AND " +
+								"Carrera = '"+ventana.strn_carreraS+"'ORDER BY Año DESC");
+
+						while(aux.next()){
+							Object[] fila = {aux.getObject(4), aux.getObject(5), aux.getObject(6)};
+							if((Integer)aux.getObject(7)>=obtener_año() - ventana.sld_años.getValue() && comprobar_clones_de_filas(ventana, aux)){
+								ventana.ids.add((Integer)aux.getObject(1));
+								ventana.dtm.addRow(fila);
+							}
+						}
+					}
+				}
+			}
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
+	}
+
+	public void buscar(Vedición vedicion){
+
+
+		String[] strn_temas = limpiar_pronombres(vedicion.tfl_tema.getText()).split(" ");
+		String strn_carreraS = ((String)vedicion.carreras.getSelectedItem());
+		String strn_lineaS = ((String)Ventana.linea.getSelectedItem());
+
+		try {
+			vedicion.dtm.setRowCount(0);
+			vedicion.dtm.setColumnCount(0);
+			vedicion.dtm.setColumnIdentifiers(vedicion.titulos);
+			vedicion.ids.clear();
+
+			if (strn_lineaS!="--Seleccione Línea--"){
 				for (String p: strn_temas){
 					ResultSet aux = getSt().executeQuery("SELECT * FROM TESIS WHERE " +
 							"REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(Titulo," +
 							"'á','a'), 'é','e'),'í','i'),'ó','o'),'ú','u')," +
 							"'Á','A'), 'É','E'),'Í','I'),'Ó','O'),'Ú','U') LIKE '%"+eliminar_acentos(p)+"%' AND " +
-							"Carrera = '"+ventana.strn_carreraS+"'ORDER BY Año DESC");
+							"Carrera = '"+strn_carreraS+"' AND " +
+							"Linea = '"+strn_lineaS+"' ORDER BY Año DESC");
 
 					while(aux.next()){
-						Object[] fila = {aux.getObject(4), aux.getObject(5), aux.getObject(6)};
-						if((Integer)aux.getObject(7)>=obtener_año() - ventana.sld_años.getValue() && comprobar_clones_de_filas(ventana, aux)){
-							ventana.ids.add((Integer)aux.getObject(1));
-							ventana.dtm.addRow(fila);
+						Object[] fila = {aux.getObject(4), aux.getObject(5), aux.getObject(6), aux.getObject(2),aux.getObject(3),aux.getObject(7),aux.getObject(8)};
+						if((Integer)aux.getObject(7)>=obtener_año() - vedicion.sld_años.getValue() && comprobar_clones_de_filas(vedicion, aux)){
+							vedicion.ids.add((Integer)aux.getObject(1));
+							vedicion.dtm.addRow(fila);
+						}
+					}
+				}
+			}else{
+				if (comprobarNumero(strn_temas[0])) { 
+
+					ResultSet auxi = getSt().executeQuery("SELECT * FROM TESIS WHERE Número="+strn_temas[0]);
+					while(auxi.next()){
+						Object[] fila2 = {auxi.getObject(4), auxi.getObject(5), auxi.getObject(6), auxi.getObject(2),auxi.getObject(3),auxi.getObject(7),auxi.getObject(8)};
+						if((Integer)auxi.getObject(7)>=obtener_año() - vedicion.sld_años.getValue() && comprobar_clones_de_filas(vedicion, auxi)){
+							vedicion.ids.add((Integer)auxi.getObject(1));
+							vedicion.dtm.addRow(fila2);
+						}
+					}
+				}else {
+					for (String p: strn_temas){
+						ResultSet aux = getSt().executeQuery("SELECT * FROM TESIS WHERE " +
+								"REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(Titulo," +
+								"'á','a'), 'é','e'),'í','i'),'ó','o'),'ú','u')," +
+								"'Á','A'), 'É','E'),'Í','I'),'Ó','O'),'Ú','U') LIKE '%"+eliminar_acentos(p)+"%' AND " +
+								"Carrera = '"+strn_carreraS+"'ORDER BY Año DESC");
+
+						while(aux.next()){
+							Object[] fila = {aux.getObject(4), aux.getObject(5), aux.getObject(6), aux.getObject(2),aux.getObject(3),aux.getObject(7),aux.getObject(8)};
+							if((Integer)aux.getObject(7)>=obtener_año() - vedicion.sld_años.getValue() && comprobar_clones_de_filas(vedicion, aux)){
+								vedicion.ids.add((Integer)aux.getObject(1));
+								vedicion.dtm.addRow(fila);
+							}
 						}
 					}
 				}
 			}
+
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 		}
@@ -529,9 +611,9 @@ public class GestorDeDatos {
 				vedicion.cmbx_linea.setSelectedItem(seleccion.getObject(3));
 				vedicion.tfl_titulo.setText(""+seleccion.getObject(4));
 				vedicion.tfl_autor.setText(""+seleccion.getObject(5));
-				vedicion.tfl_Tutor.setText(""+seleccion.getObject(6));
-				vedicion.tfl_Año.setText(""+seleccion.getObject(7));
-				vedicion.tfl_numero.setText(""+seleccion.getObject(8));
+				vedicion.tfl_tutor.setText(""+seleccion.getObject(6));
+				vedicion.tfl_año.setText(""+seleccion.getObject(7));
+				vedicion.tfl_nro.setText(""+seleccion.getObject(8));
 				control = seleccion.getInt(8);				
 			}
 		} catch (SQLException e1) {
@@ -539,9 +621,9 @@ public class GestorDeDatos {
 		}
 	}
 
-	public void focus_textField (Vlogin vlogin, Vedición vedicion, Ventana ventana, FocusEvent e){
+	public void focus_textField (Vlogin vlogin, Vedición vedicion, Ventana ventana, FocusEvent e, Vcuenta vcuenta){
 
-		for (JTextField i : getAll_Array_tfl(vedicion,ventana, vlogin)) {
+		for (JTextField i : getAll_Array_tfl(vedicion,ventana, vlogin, vcuenta)) {
 			if (e.getSource()==i){
 				((JTextComponent) i).selectAll();
 			}
@@ -566,18 +648,18 @@ public class GestorDeDatos {
 		if (evitar_tfl_blancos(vedicion)){
 			try {
 
-				ResultSet comprobar = getSt().executeQuery("SELECT * FROM TESIS WHERE Número='"+vedicion.tfl_numero.getText()+"'");
+				ResultSet comprobar = getSt().executeQuery("SELECT * FROM TESIS WHERE Número='"+vedicion.tfl_nro.getText()+"'");
 				if(comprobar.next()){
 					JOptionPane.showMessageDialog(vedicion, "El número ya está asignado, Por favor introduzca un número diferente");
 				}else{
 					getSt().executeUpdate("INSERT INTO TESIS (Carrera, Linea, Titulo, Autor, Tutor, Año, Número) VALUES ('"+
 							vedicion.cmbx_carrera.getSelectedItem()+"','"+
 							vedicion.cmbx_linea.getSelectedItem()+"','"+
-							vedicion.tfl_titulo.getText()+"','"+
+							vedicion.tfl_titulo.getText().toUpperCase()+"','"+
 							vedicion.tfl_autor.getText()+"','"+
-							vedicion.tfl_Tutor.getText()+"',"+
-							Integer.parseInt(vedicion.tfl_Año.getText())+","+
-							Integer.parseInt(vedicion.tfl_numero.getText())+")");
+							vedicion.tfl_tutor.getText()+"',"+
+							Integer.parseInt(vedicion.tfl_año.getText())+","+
+							Integer.parseInt(vedicion.tfl_nro.getText())+")");
 					JOptionPane.showMessageDialog(vedicion, "Operación Exitosa");
 					limpiar_campos_edicion(vedicion);
 
@@ -598,12 +680,12 @@ public class GestorDeDatos {
 
 		if (evitar_tfl_blancos(vedicion)){
 			try {
-				if (control == Integer.parseInt(vedicion.tfl_numero.getText())){
+				if (control == Integer.parseInt(vedicion.tfl_nro.getText())){
 
 					modificar(vedicion);
 
 				}else{
-					ResultSet comprobar = getSt().executeQuery("SELECT * FROM TESIS WHERE Número='"+vedicion.tfl_numero.getText()+"'");
+					ResultSet comprobar = getSt().executeQuery("SELECT * FROM TESIS WHERE Número='"+vedicion.tfl_nro.getText()+"'");
 					if(comprobar.next()){
 						JOptionPane.showMessageDialog(vedicion, "El número ya está asignado, Por favor introduzca un número diferente");
 					}else{
@@ -621,19 +703,19 @@ public class GestorDeDatos {
 		}
 	}
 
-	public void atajos_de_teclado(KeyEvent e, Vlogin vlogin, Ventana ventana) {
+	public void atajos_de_teclado(KeyEvent e, Vlogin vlogin, Ventana ventana, Vedición vedicion, Vcuenta vcuenta) {
 
 		if(e.getKeyCode()==KeyEvent.VK_ENTER){
 
-			if (e.getSource()==vlogin.tfl_usuario){
-				vlogin.pwd_contraseña.requestFocus();
-			}
-			if(e.getSource()==vlogin.pwd_contraseña){
-				vlogin.btn_aceptar.doClick();
-			}
-			if (e.getSource()==ventana.carreras || e.getSource()==Ventana.linea || e.getSource()==ventana.sld_años || e.getSource()==ventana.tfl_tema){
-				ventana.btn_buscar.doClick();
-			}
+			if (e.getSource()==vlogin.tfl_usuario){	vlogin.pwd_contraseña.requestFocus();}
+
+			if (e.getSource()==vlogin.pwd_contraseña){ vlogin.btn_aceptar.doClick();}
+
+			if (e.getSource()==ventana.carreras || e.getSource()==Ventana.linea || e.getSource()==ventana.sld_años || e.getSource()==ventana.tfl_tema){ventana.btn_buscar.doClick();}
+
+			if (e.getSource()==vedicion.carreras || e.getSource()==Vedición.linea || e.getSource()==vedicion.sld_años || e.getSource()==vedicion.tfl_tema){vedicion.btn_buscar.doClick();}
+
+			if (e.getSource()==vcuenta.psw_nueva_contraseña) {vcuenta.psw_repita_contraseña.requestFocus();}
 		}
 	}
 
@@ -662,5 +744,59 @@ public class GestorDeDatos {
 		GestorDeDatos.server_socket = server_socket;
 	}
 
+	public void m_o_busqueda (Vedición vedicion) {
+		if (vedicion.panelIzquierda!=null && vedicion.panelIzquierda.isVisible()) {
+			vedicion.panelIzquierda.setVisible(false);
+			vedicion.btn_vista_buscar.setIcon(new ImageIcon(Ventana.class.getResource("/Imagenes/buscarOsP.png")));
+			vedicion.btn_vista_buscar.setRolloverIcon(new ImageIcon(Ventana.class.getResource("/Imagenes/buscarOsG.png")));
+		}else if(vedicion.panelIzquierda!=null) {
+			vedicion.panelIzquierda.setVisible(true);
+			vedicion.btn_vista_buscar.setIcon(new ImageIcon(Ventana.class.getResource("/Imagenes/searchmP.png")));
+			vedicion.btn_vista_buscar.setRolloverIcon(new ImageIcon(Ventana.class.getResource("/Imagenes/searchmG.png")));
+		}
+	}
+
+	public void mostrar_vcuenta(Vcuenta vcuenta) {
+
+		JTextField tfl_vcuenta[] = new JTextField[] {vcuenta.tfl_usuario, vcuenta.psw_nueva_contraseña, vcuenta.psw_repita_contraseña}; 
+
+		for(JTextField t:tfl_vcuenta) {
+			t.setText("");
+		}
+		try {
+			vcuenta.tfl_usuario.setText(""+String.valueOf(getSt().executeQuery("SELECT Usuario FROM LOGIN WHERE id='1'").getObject(1)));
+		}catch (Exception e) {
+			e.getStackTrace();
+		}
+		vcuenta.setVisible(true);
+
+
+	}
+
+	public void modificarContraseña(Vcuenta vcuenta) {
+
+		if (String.valueOf(vcuenta.psw_nueva_contraseña.getPassword()).equals(String.valueOf(vcuenta.psw_repita_contraseña.getPassword()))) {
+			try {
+				getSt().executeUpdate("UPDATE LOGIN SET Contraseña='"+String.valueOf(vcuenta.psw_nueva_contraseña.getPassword())+"' WHERE id=1"); //FIXME Encriptar contraseña
+				JOptionPane.showMessageDialog(vcuenta, "Operación exitosa");
+				vcuenta.psw_nueva_contraseña.setText("");
+				vcuenta.psw_repita_contraseña.setText("");
+			}catch (Exception e) {
+				e.getStackTrace();
+			}
+		}else {
+			JOptionPane.showMessageDialog(vcuenta, "Las contraseñas no coinsiden");
+		}
+	}
+
+	public void modificarUsuario(Vcuenta vcuenta) {
+
+		try {
+			getSt().executeUpdate("UPDATE LOGIN SET Usuario='"+vcuenta.tfl_usuario.getText()+"' WHERE id=1");
+			JOptionPane.showMessageDialog(vcuenta, "Operación exitosa");
+		}catch (Exception e) {
+			e.getStackTrace();
+		}
+	}
 
 }//Fin de la clase gestor

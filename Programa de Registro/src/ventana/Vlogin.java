@@ -1,7 +1,6 @@
 package ventana;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Container;
 import java.awt.GridLayout;
 
@@ -25,14 +24,13 @@ public class Vlogin extends JDialog{
 	public JPanel pnl_base;
 
 	public Vlogin(Ventana padre, String nombre, ImageIcon imagen_fondo) {
-
 		super(padre,nombre);
 		setModal(true);
 		setSize(400, 300);
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(Vlogin.DISPOSE_ON_CLOSE);
 		this.imagen_fondo = new JLabel(imagen_fondo);
-		setResizable(true);
+		setResizable(false);
 		agregarElementos();
 
 	}
@@ -54,7 +52,6 @@ public class Vlogin extends JDialog{
 		
 			//Label Usuario
 		lbl_Usuario = new JLabel("Usuario:");
-		lbl_Usuario.setForeground(Color.WHITE);
 		lbl_Usuario.setBounds(6, 50, 67, 21);
 		panel1.add(lbl_Usuario);
 		
@@ -65,7 +62,6 @@ public class Vlogin extends JDialog{
 
 			//Label Contraseña
 		lbl_Contraseña = new JLabel("Contraseña:");
-		lbl_Contraseña.setForeground(Color.WHITE);
 		lbl_Contraseña.setBounds(0, 112, 90, 21);
 		panel1.add(lbl_Contraseña);
 			

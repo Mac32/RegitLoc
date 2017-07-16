@@ -51,7 +51,7 @@ public class Ventana extends JFrame{
 		}};
 		public JTable tabla = new JTable(dtm);
 		public List<Object> ids = new ArrayList<Object>();
-		private JLabel lbl_Ran_años, lblNro, lblAo, lblLinea, lblAutor, lblTutor, lblTtulo, lblCarrera,label,label_1,label_2,label_3,label_4,label_5,label_6;
+		private JLabel lbl_Ran_años, lblNro, lblAo, lblLinea, lblAutor, lblTutor, lblTtulo, lblCarrera;
 		public JLabel lbl_Nro_E;
 		public JSlider sld_años;
 		public int años;
@@ -127,18 +127,7 @@ public class Ventana extends JFrame{
 			tabla.setOpaque(false);
 			tabla.setRowHeight(25);
 			tabla.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); //Hace que solo se pueda seleccionar una fila de la tabla
-			
-			//		Se añade la tabla al scroll
-			scroll = new JScrollPane(tabla);
-			scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-			scroll.setBackground(Color.CYAN);
-			scroll.setOpaque(false);
 
-			//		Se añade el scroll al panel
-			panelDerecha = new JPanel();
-			panelDerecha.setOpaque(false);
-			panelDerecha.setLayout(new GridLayout(0,1));
-			panelDerecha.add(scroll);
 
 			//Creación de Panel Izquierdo
 			panelIzquierda = new JPanel();
@@ -149,7 +138,7 @@ public class Ventana extends JFrame{
 			gbl_panelIzquierda.rowHeights = new int[]{0, 37, 24, 24, 0, 176, 80, 0};
 			gbl_panelIzquierda.columnWeights = new double[]{0.0, 1.0};
 			panelIzquierda.setLayout(gbl_panelIzquierda);
-			
+
 			lblBuscar = new JLabel("Buscar:");
 			GridBagConstraints gbc_lblBuscar = new GridBagConstraints();
 			gbc_lblBuscar.anchor = GridBagConstraints.WEST;
@@ -157,7 +146,7 @@ public class Ventana extends JFrame{
 			gbc_lblBuscar.gridx = 0;
 			gbc_lblBuscar.gridy = 0;
 			panelIzquierda.add(lblBuscar, gbc_lblBuscar);
-			
+
 			tfl_tema = new JTextField();
 			GridBagConstraints gbc_tfl_tema = new GridBagConstraints();
 			gbc_tfl_tema.insets = new Insets(5, 5, 5, 0);
@@ -262,35 +251,21 @@ public class Ventana extends JFrame{
 			gbc_btn_buscar.gridy = 5;
 			panelIzquierda.add(btn_buscar, gbc_btn_buscar);
 
-			//Se agregan los elementos a la ventana
-			panel_base.add(barraHerramientas,BorderLayout.NORTH);
-			panel_base.add(panelDerecha,BorderLayout.CENTER);
-
 			//Creacion de panel detalles
 			pnl_detalles = new JPanel();
-			panelDerecha.add(pnl_detalles);
 			pnl_detalles.setOpaque(false);
-			pnl_detalles.setBorder(new TitledBorder(null, "Detalles", TitledBorder.LEADING, TitledBorder.TOP, null, Color.WHITE));
+			pnl_detalles.setBorder(new TitledBorder(null, "Detalles", TitledBorder.LEADING, TitledBorder.TOP, null));
 			GridBagLayout gbl_pnl_detalles = new GridBagLayout();
-			gbl_pnl_detalles.columnWidths = new int[]{55, 0, 12, 55, 0, 0, 12, 54, 12, 71, 0, 12, 53, 12, 0, 42, 12, 34, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-			gbl_pnl_detalles.rowHeights = new int[]{0, 17, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-			gbl_pnl_detalles.columnWeights = new double[]{0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
-			gbl_pnl_detalles.rowWeights = new double[]{0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+			gbl_pnl_detalles.rowWeights = new double[]{0.0, 1.0, 1.0, 1.0};
+			gbl_pnl_detalles.columnWeights = new double[]{0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0};
 			pnl_detalles.setLayout(gbl_pnl_detalles);
-
-			label_6 = new JLabel(" ");
-			GridBagConstraints gbc_label_6 = new GridBagConstraints();
-			gbc_label_6.insets = new Insets(0, 0, 5, 5);
-			gbc_label_6.gridx = 1;
-			gbc_label_6.gridy = 0;
-			pnl_detalles.add(label_6, gbc_label_6);
-
+			
 			//		Label Título
 			lblTtulo = new JLabel("Título: ");
 			lblTtulo.setFont(new Font("Dialog", Font.BOLD, 14));
 			GridBagConstraints gbc_lblTtulo = new GridBagConstraints();
 			gbc_lblTtulo.anchor = GridBagConstraints.WEST;
-			gbc_lblTtulo.insets = new Insets(0, 0, 5, 5);
+			gbc_lblTtulo.insets = new Insets(0, 10, 5, 5);
 			gbc_lblTtulo.gridx = 1;
 			gbc_lblTtulo.gridy = 1;
 			pnl_detalles.add(lblTtulo, gbc_lblTtulo);
@@ -308,31 +283,17 @@ public class Ventana extends JFrame{
 			gbc_textArea_Titulo.gridx = 2;
 			gbc_textArea_Titulo.gridy = 1;
 			pnl_detalles.add(txtArea_Titulo, gbc_textArea_Titulo);
-
-			label_4 = new JLabel(" ");
-			GridBagConstraints gbc_label_4 = new GridBagConstraints();
-			gbc_label_4.insets = new Insets(0, 0, 5, 5);
-			gbc_label_4.gridx = 1;
-			gbc_label_4.gridy = 2;
-			pnl_detalles.add(label_4, gbc_label_4);
 			
-						label = new JLabel("              ");
-						GridBagConstraints gbc_label = new GridBagConstraints();
-						gbc_label.insets = new Insets(0, 0, 5, 5);
-						gbc_label.gridx = 8;
-						gbc_label.gridy = 3;
-						pnl_detalles.add(label, gbc_label);
-
 			//		Label Autor
 			lblAutor = new JLabel("Autor: ");
 			lblAutor.setFont(new Font("Dialog", Font.BOLD, 14));
 			GridBagConstraints gbc_lblAutor = new GridBagConstraints();
 			gbc_lblAutor.anchor = GridBagConstraints.WEST;
-			gbc_lblAutor.insets = new Insets(0, 0, 5, 5);
+			gbc_lblAutor.insets = new Insets(0, 10, 5, 5);
 			gbc_lblAutor.gridx = 1;
-			gbc_lblAutor.gridy = 4;
+			gbc_lblAutor.gridy = 2;
 			pnl_detalles.add(lblAutor, gbc_lblAutor);
-
+			
 			lbl_Autor = new JLabel("...");
 			lbl_Autor.setFont(new Font("Dialog", Font.PLAIN, 12));
 			GridBagConstraints gbc_lbl_Autor = new GridBagConstraints();
@@ -340,72 +301,59 @@ public class Ventana extends JFrame{
 			gbc_lbl_Autor.anchor = GridBagConstraints.WEST;
 			gbc_lbl_Autor.insets = new Insets(0, 0, 5, 5);
 			gbc_lbl_Autor.gridx = 2;
-			gbc_lbl_Autor.gridy = 4;
+			gbc_lbl_Autor.gridy = 2;
 			pnl_detalles.add(lbl_Autor, gbc_lbl_Autor);
-												
-															//		Label Tutor
-															lblTutor = new JLabel("Tutor: ");
-															lblTutor.setFont(new Font("Dialog", Font.BOLD, 14));
-															GridBagConstraints gbc_lblTutor = new GridBagConstraints();
-															gbc_lblTutor.anchor = GridBagConstraints.WEST;
-															gbc_lblTutor.insets = new Insets(0, 0, 5, 5);
-															gbc_lblTutor.gridx = 5;
-															gbc_lblTutor.gridy = 4;
-															pnl_detalles.add(lblTutor, gbc_lblTutor);
-									
-												lbl_tutor = new JLabel("...");
-												lbl_tutor.setFont(new Font("Dialog", Font.PLAIN, 12));
-												GridBagConstraints gbc_lbl_tutor = new GridBagConstraints();
-												gbc_lbl_tutor.gridwidth = 2;
-												gbc_lbl_tutor.anchor = GridBagConstraints.WEST;
-												gbc_lbl_tutor.insets = new Insets(0, 0, 5, 5);
-												gbc_lbl_tutor.gridx = 7;
-												gbc_lbl_tutor.gridy = 4;
-												pnl_detalles.add(lbl_tutor, gbc_lbl_tutor);
-						
-									//		Label Año
-									lblAo = new JLabel("Año: ");
-									lblAo.setFont(new Font("Dialog", Font.BOLD, 14));
-									GridBagConstraints gbc_lblAo = new GridBagConstraints();
-									gbc_lblAo.anchor = GridBagConstraints.WEST;
-									gbc_lblAo.insets = new Insets(0, 0, 5, 5);
-									gbc_lblAo.gridx = 9;
-									gbc_lblAo.gridy = 4;
-									pnl_detalles.add(lblAo, gbc_lblAo);
-						
-									lbl_año = new JLabel("...");
-									lbl_año.setFont(new Font("Dialog", Font.PLAIN, 12));
-									GridBagConstraints gbc_lbl_año = new GridBagConstraints();
-									gbc_lbl_año.anchor = GridBagConstraints.WEST;
-									gbc_lbl_año.insets = new Insets(0, 0, 5, 5);
-									gbc_lbl_año.gridx = 10;
-									gbc_lbl_año.gridy = 4;
-									pnl_detalles.add(lbl_año, gbc_lbl_año);
 			
-						label_1 = new JLabel("              ");
-						GridBagConstraints gbc_label_1 = new GridBagConstraints();
-						gbc_label_1.insets = new Insets(0, 0, 5, 5);
-						gbc_label_1.gridx = 4;
-						gbc_label_1.gridy = 5;
-						pnl_detalles.add(label_1, gbc_label_1);
+			//		Label Tutor
+			lblTutor = new JLabel("Tutor: ");
+			lblTutor.setFont(new Font("Dialog", Font.BOLD, 14));
+			GridBagConstraints gbc_lblTutor = new GridBagConstraints();
+			gbc_lblTutor.anchor = GridBagConstraints.WEST;
+			gbc_lblTutor.insets = new Insets(0, 0, 5, 5);
+			gbc_lblTutor.gridx = 5;
+			gbc_lblTutor.gridy = 2;
+			pnl_detalles.add(lblTutor, gbc_lblTutor);
 			
-						label_5 = new JLabel("          ");
-						GridBagConstraints gbc_label_5 = new GridBagConstraints();
-						gbc_label_5.insets = new Insets(0, 0, 5, 5);
-						gbc_label_5.gridx = 10;
-						gbc_label_5.gridy = 6;
-						pnl_detalles.add(label_5, gbc_label_5);
-
+			lbl_tutor = new JLabel("...");
+			lbl_tutor.setFont(new Font("Dialog", Font.PLAIN, 12));
+			GridBagConstraints gbc_lbl_tutor = new GridBagConstraints();
+			gbc_lbl_tutor.gridwidth = 2;
+			gbc_lbl_tutor.anchor = GridBagConstraints.WEST;
+			gbc_lbl_tutor.insets = new Insets(0, 0, 5, 5);
+			gbc_lbl_tutor.gridx = 6;
+			gbc_lbl_tutor.gridy = 2;
+			pnl_detalles.add(lbl_tutor, gbc_lbl_tutor);
+			
+			//		Label Año
+			lblAo = new JLabel("Año: ");
+			lblAo.setFont(new Font("Dialog", Font.BOLD, 14));
+			GridBagConstraints gbc_lblAo = new GridBagConstraints();
+			gbc_lblAo.anchor = GridBagConstraints.WEST;
+			gbc_lblAo.insets = new Insets(0, 0, 5, 5);
+			gbc_lblAo.gridx = 9;
+			gbc_lblAo.gridy = 2;
+			pnl_detalles.add(lblAo, gbc_lblAo);
+			
+			lbl_año = new JLabel("...");
+			lbl_año.setFont(new Font("Dialog", Font.PLAIN, 12));
+			GridBagConstraints gbc_lbl_año = new GridBagConstraints();
+			gbc_lbl_año.gridwidth = 3;
+			gbc_lbl_año.anchor = GridBagConstraints.WEST;
+			gbc_lbl_año.insets = new Insets(0, 0, 5, 5);
+			gbc_lbl_año.gridx = 10;
+			gbc_lbl_año.gridy = 2;
+			pnl_detalles.add(lbl_año, gbc_lbl_año);
+			
 			//		Label Carrera
 			lblCarrera = new JLabel("Carrera: ");
 			lblCarrera.setFont(new Font("Dialog", Font.BOLD, 14));
 			GridBagConstraints gbc_lblCarrera = new GridBagConstraints();
 			gbc_lblCarrera.anchor = GridBagConstraints.WEST;
-			gbc_lblCarrera.insets = new Insets(0, 0, 5, 5);
+			gbc_lblCarrera.insets = new Insets(0, 10, 5, 5);
 			gbc_lblCarrera.gridx = 1;
-			gbc_lblCarrera.gridy = 7;
+			gbc_lblCarrera.gridy = 3;
 			pnl_detalles.add(lblCarrera, gbc_lblCarrera);
-
+			
 			lbl_CarreraPD = new JLabel("...");
 			lbl_CarreraPD.setFont(new Font("Dialog", Font.PLAIN, 12));
 			GridBagConstraints gbc_lbl_CarreraPD = new GridBagConstraints();
@@ -413,64 +361,69 @@ public class Ventana extends JFrame{
 			gbc_lbl_CarreraPD.anchor = GridBagConstraints.WEST;
 			gbc_lbl_CarreraPD.insets = new Insets(0, 0, 5, 5);
 			gbc_lbl_CarreraPD.gridx = 2;
-			gbc_lbl_CarreraPD.gridy = 7;
+			gbc_lbl_CarreraPD.gridy = 3;
 			pnl_detalles.add(lbl_CarreraPD, gbc_lbl_CarreraPD);
-												
-															//		Label Linea
-															lblLinea = new JLabel("Linea: ");
-															lblLinea.setFont(new Font("Dialog", Font.BOLD, 14));
-															GridBagConstraints gbc_lblLinea = new GridBagConstraints();
-															gbc_lblLinea.anchor = GridBagConstraints.WEST;
-															gbc_lblLinea.insets = new Insets(0, 0, 5, 5);
-															gbc_lblLinea.gridx = 5;
-															gbc_lblLinea.gridy = 7;
-															pnl_detalles.add(lblLinea, gbc_lblLinea);
-									
-												lbl_lineaPD = new JLabel("...");
-												lbl_lineaPD.setFont(new Font("Dialog", Font.PLAIN, 12));
-												GridBagConstraints gbc_lbl_lineaPD = new GridBagConstraints();
-												gbc_lbl_lineaPD.gridwidth = 2;
-												gbc_lbl_lineaPD.anchor = GridBagConstraints.WEST;
-												gbc_lbl_lineaPD.insets = new Insets(0, 0, 5, 5);
-												gbc_lbl_lineaPD.gridx = 7;
-												gbc_lbl_lineaPD.gridy = 7;
-												pnl_detalles.add(lbl_lineaPD, gbc_lbl_lineaPD);
-						
-									//		Label Número
-									lblNro = new JLabel("Nro:");
-									lblNro.setFont(new Font("Dialog", Font.BOLD, 14));
-									GridBagConstraints gbc_lblNro = new GridBagConstraints();
-									gbc_lblNro.anchor = GridBagConstraints.WEST;
-									gbc_lblNro.insets = new Insets(0, 0, 5, 5);
-									gbc_lblNro.gridx = 9;
-									gbc_lblNro.gridy = 7;
-									pnl_detalles.add(lblNro, gbc_lblNro);
 			
-						lbl_Nro_E = new JLabel("...");
-						GridBagConstraints gbc_lbl_Nro_E = new GridBagConstraints();
-						gbc_lbl_Nro_E.insets = new Insets(0, 0, 5, 5);
-						gbc_lbl_Nro_E.anchor = GridBagConstraints.WEST;
-						gbc_lbl_Nro_E.gridx = 10;
-						gbc_lbl_Nro_E.gridy = 7;
-						pnl_detalles.add(lbl_Nro_E, gbc_lbl_Nro_E);
-
-			label_2 = new JLabel(" ");
-			GridBagConstraints gbc_label_2 = new GridBagConstraints();
-			gbc_label_2.insets = new Insets(0, 0, 5, 5);
-			gbc_label_2.gridx = 1;
-			gbc_label_2.gridy = 8;
-			pnl_detalles.add(label_2, gbc_label_2);
+			//		Label Linea
+			lblLinea = new JLabel("Linea: ");
+			lblLinea.setFont(new Font("Dialog", Font.BOLD, 14));
+			GridBagConstraints gbc_lblLinea = new GridBagConstraints();
+			gbc_lblLinea.anchor = GridBagConstraints.WEST;
+			gbc_lblLinea.insets = new Insets(0, 0, 5, 5);
+			gbc_lblLinea.gridx = 5;
+			gbc_lblLinea.gridy = 3;
+			pnl_detalles.add(lblLinea, gbc_lblLinea);
 			
-						label_3 = new JLabel("          ");
-						GridBagConstraints gbc_label_3 = new GridBagConstraints();
-						gbc_label_3.insets = new Insets(0, 0, 5, 5);
-						gbc_label_3.gridx = 14;
-						gbc_label_3.gridy = 9;
-						pnl_detalles.add(label_3, gbc_label_3);
+			lbl_lineaPD = new JLabel("...");
+			lbl_lineaPD.setFont(new Font("Dialog", Font.PLAIN, 12));
+			GridBagConstraints gbc_lbl_lineaPD = new GridBagConstraints();
+			gbc_lbl_lineaPD.gridwidth = 2;
+			gbc_lbl_lineaPD.anchor = GridBagConstraints.WEST;
+			gbc_lbl_lineaPD.insets = new Insets(0, 0, 5, 5);
+			gbc_lbl_lineaPD.gridx = 6;
+			gbc_lbl_lineaPD.gridy = 3;
+			pnl_detalles.add(lbl_lineaPD, gbc_lbl_lineaPD);
+			
+			//		Label Número
+			lblNro = new JLabel("Nro:");
+			lblNro.setFont(new Font("Dialog", Font.BOLD, 14));
+			GridBagConstraints gbc_lblNro = new GridBagConstraints();
+			gbc_lblNro.anchor = GridBagConstraints.WEST;
+			gbc_lblNro.insets = new Insets(0, 0, 5, 5);
+			gbc_lblNro.gridx = 9;
+			gbc_lblNro.gridy = 3;
+			pnl_detalles.add(lblNro, gbc_lblNro);
+			
+			lbl_Nro_E = new JLabel("...");
+			GridBagConstraints gbc_lbl_Nro_E = new GridBagConstraints();
+			gbc_lbl_Nro_E.gridwidth = 3;
+			gbc_lbl_Nro_E.insets = new Insets(0, 0, 5, 5);
+			gbc_lbl_Nro_E.anchor = GridBagConstraints.WEST;
+			gbc_lbl_Nro_E.gridx = 10;
+			gbc_lbl_Nro_E.gridy = 3;
+			pnl_detalles.add(lbl_Nro_E, gbc_lbl_Nro_E);
 			panel_base.add(panelIzquierda,BorderLayout.WEST);
+			
+			//		Se añade la tabla al scroll
+			scroll = new JScrollPane(tabla);
+			scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+			scroll.setBackground(Color.CYAN);
+			scroll.setOpaque(false);
+			
+			//		Se añade el scroll y el panel detalles al panel
+			panelDerecha = new JPanel();
+			panelDerecha.setOpaque(false);
+			panelDerecha.setLayout(new GridLayout(0,1));
+			panelDerecha.add(scroll);
+			panelDerecha.add(pnl_detalles);
+
+			//Se agregan los elementos a la ventana
+			panel_base.add(barraHerramientas,BorderLayout.NORTH);
+			panel_base.add(panelDerecha,BorderLayout.CENTER);
+
 
 			imagen_fondo.setBounds(0, 0, 1200, 700);
-			
+
 			c.add(panel_base);
 			c.add(imagen_fondo);
 
